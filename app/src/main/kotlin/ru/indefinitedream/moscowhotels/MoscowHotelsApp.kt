@@ -1,6 +1,6 @@
-package ru.indefinitedream.moscowhotels;
+package ru.indefinitedream.moscowhotels
 
-import android.app.Application;
+import android.app.Application
 
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -8,20 +8,35 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 private const val CACHE_SIZE : Long = 10 * 1024 * 1024
-private const val API_URL = "https://apidata.mos.ru/v1/datasets/2343/rows"
+private const val API_URL = "https://apidata.mos.ru/v1/"
+private const val API_KEY = "api_key"
+private const val KEY = "0e0a8e267c408d925e1eeaf73a2a6e08" // TODO: get from resources
+
+var api : MosApi? = null
 
 /**
  * Application object.
  */
 class MoscowHotelsApp : Application() {
 
-    private var api : MosApi? = null
+
 
     override fun onCreate() {
         super.onCreate()
 
         val client = OkHttpClient.Builder()
                 .cache(Cache(cacheDir, CACHE_SIZE))
+                .addInterceptor {
+                    val url = it.request().url()
+                            .newBuilder()
+                            .addQueryParameter(API_KEY, KEY)
+                            .build()
+                    val request = it.request()
+                            .newBuilder()
+                            .url(url)
+                            .build()
+                    it.proceed(request)
+                }
                 .build()
 
         val retrofit = Retrofit.Builder()

@@ -3,19 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="16dp"
-        android:text="Carston hotel"
+        android:lines="1"
+        android:maxLines="1"
+        android:minLines="1"
+        android:text="Incredible hotel"
         android:textColor="@color/colorPrimary"
         android:textSize="22dp"
         android:textStyle="bold"
+        android:ellipsize="end"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <RatingBar
@@ -31,16 +39,20 @@
         android:rating="4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/adressText" />
+        app:layout_constraintTop_toBottomOf="@+id/addressText" />
 
     <TextView
-        android:id="@+id/adressText"
+        android:id="@+id/addressText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
+        android:lines="1"
+        android:maxLines="1"
+        android:minLines="1"
         android:text="Arbat street"
+        android:ellipsize="end"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
