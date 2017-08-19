@@ -1,6 +1,6 @@
 package ru.indefinitedream.moscowhotels.data
 
-import retrofit2.Call
+import io.reactivex.Single
 import retrofit2.http.GET
 
 /**
@@ -9,5 +9,5 @@ import retrofit2.http.GET
 interface MosApi {
 
     @GET("datasets/2343/rows")
-    fun getHotels(): Call<List<Hotel>>
+    fun hotels(): Single<List<Hotel>>
 }

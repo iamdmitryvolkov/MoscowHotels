@@ -1,6 +1,5 @@
 package ru.indefinitedream.moscowhotels.ui
 
-import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
@@ -9,96 +8,112 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.RatingBar
 import android.widget.TextView
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import butterknife.BindView
+import butterknife.ButterKnife
 import ru.indefinitedream.moscowhotels.data.Hotel
 import ru.indefinitedream.moscowhotels.R
-import ru.indefinitedream.moscowhotels.api
+import ru.indefinitedream.moscowhotels.injector
+import ru.indefinitedream.moscowhotels.presenter.HotelsListPresenter
 import ru.indefinitedream.moscowhotels.view.HotelsView
+import javax.inject.Inject
 
-private val STARS_NAMES = arrayOf(
-        "без звезд",
-        "одна звезда",
-        "две звезды",
-        "три звезды",
-        "четыре звезды",
-        "пять звезд"
-)
 
-// TODO: put to strings
-private val SHORT_AREA_NAMES = mapOf(
-        "ЦАО" to "Центральный административный округ",
-        "ЮАО" to "Южный административный округ",
-        "ВАО" to "Восточный административный округ",
-        "ЗАО" to "Западный административный округ",
-        "СВАО" to "Северо-Восточный административный округ",
-        "СЗАО" to "Северо-Западный административный округ",
-        "ЮВАО" to "Юго-Восточный административный округ",
-        "ЮЗАО" to "Юго-Западный административный округ"
-)
+const val ANIMATION_DURATION = 500L
+const val VISIBLE_ALPHA = 1f
+const val INVISIBLE_ALPHA = 0f
 
 /**
  * Main Activity class
  */
-class HotelsActivity : AppCompatActivity(), HotelsView {
+class HotelsActivity : AppCompatActivity(), HotelsView, OnItemClickListener {
 
-    var recycler : RecyclerView? = null
+    @Inject
+    lateinit var presenter : HotelsListPresenter
+
+    @BindView(R.id.recycler)
+    lateinit var recycler : RecyclerView
+
+    @BindView(R.id.progress)
+    lateinit var progress : ProgressBar
+
+    @BindView(R.id.error_message)
+    lateinit var error : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        recycler = (findViewById(R.id.recycler) as RecyclerView).also {
+        injector().inject(this)
+
+        ButterKnife.bind(this)
+        recycler.also {
             it.layoutManager = LinearLayoutManager(this)
             it.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         }
 
-        load()
+        presenter.connectView(this)
     }
 
-    private fun load() {
-        api?.getHotels()?.enqueue(object : Callback<List<Hotel>> {
-            override fun onResponse(call: Call<List<Hotel>>, response: Response<List<Hotel>>) {
-                showHotels(response.body())
-            }
-
-            override fun onFailure(call: Call<List<Hotel>>, t: Throwable) {
-                t.printStackTrace()
-                // TODO: show error
-            }
-        })
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.disconnectView()
+        injector().eject(this)
     }
 
-    override fun showHotels(hotels : List<Hotel>) {
-        recycler!!.adapter = HotelsAdapter(hotels)
+
+    override fun showHotels(hotels : List<Hotel>, animated : Boolean) {
+        setVisibleView(recycler, animated)
+        recycler.adapter = HotelsAdapter(hotels, this)
     }
 
-    override fun showProgress() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun showProgress(animated : Boolean) {
+        setVisibleView(progress, animated)
     }
 
-    override fun showError(error: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun showError(animated : Boolean) {
+        setVisibleView(error, animated)
+    }
+
+    override fun onItemClick(adapterPosition: Int) {
+        presenter.onItemClick(adapterPosition)
+    }
+
+    private fun setVisibleView(view : View, animated : Boolean) {
+        setVisibility(recycler, view == recycler, animated)
+        setVisibility(progress, view == progress, animated)
+        setVisibility(error, view == error, animated)
+    }
+
+    private fun setVisibility(view : View, visible: Boolean, animated : Boolean) {
+        val alpha = if (visible) VISIBLE_ALPHA else INVISIBLE_ALPHA
+        if (animated) {
+            view.animate().alpha(alpha).setDuration(ANIMATION_DURATION).start()
+        } else {
+            view.alpha = alpha
+        }
     }
 }
 
 /**
  * View holder to show
  */
-class HotelsHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class HotelsHolder(itemView: View, private val itemClickListener: OnItemClickListener?)
+    : RecyclerView.ViewHolder(itemView) {
 
-    val name : TextView = itemView.findViewById(R.id.name) as TextView
-    val address : TextView = itemView.findViewById(R.id.addressText) as TextView
-    val rating: RatingBar = itemView.findViewById(R.id.ratingBar) as RatingBar
+    @BindView(R.id.name)
+    lateinit var name : TextView
+    @BindView(R.id.addressText)
+    lateinit var address : TextView
+    @BindView(R.id.ratingBar)
+    lateinit var rating: RatingBar
 
     init {
+        ButterKnife.bind(this, itemView)
         itemView.setOnClickListener {
-            val context = itemView.context
-            val intent = Intent(context, DetailsActivity::class.java)
-            context.startActivity(intent)
+            itemClickListener?.onItemClick(adapterPosition)
         }
     }
 }
@@ -106,15 +121,12 @@ class HotelsHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 /**
  * Adapter for hotels
  */
-class HotelsAdapter(var hotels : List<Hotel>) : RecyclerView.Adapter<HotelsHolder>() {
-
-    init {
-        hotels = hotels.sortedWith(Comparator { o1, o2 -> getRating(o2).compareTo(getRating(o1)) })
-    }
+class HotelsAdapter(var hotels : List<Hotel>, private val onItemClickListener: OnItemClickListener?)
+    : RecyclerView.Adapter<HotelsHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): HotelsHolder {
         val view = LayoutInflater.from(parent!!.context).inflate(R.layout.hotel_item, parent, false)
-        return HotelsHolder(view)
+        return HotelsHolder(view, onItemClickListener)
     }
 
     override fun getItemCount(): Int = hotels.size
@@ -123,9 +135,9 @@ class HotelsAdapter(var hotels : List<Hotel>) : RecyclerView.Adapter<HotelsHolde
         val hotel = hotels[position]
         holder!!.name.text = hotel.cells?.name
         holder.address.text = getAddress(hotel)
-        val stars = getRating(hotel)
+        val stars = hotel.cells!!.stars
         holder.rating.visibility = if (stars != -1) View.VISIBLE else View.INVISIBLE
-        if (stars >= 0) holder.rating.rating = stars.toFloat()
+        if (stars != null) holder.rating.rating = stars.toFloat()
     }
 
     fun getAddress(hotel : Hotel) : String {
@@ -136,6 +148,9 @@ class HotelsAdapter(var hotels : List<Hotel>) : RecyclerView.Adapter<HotelsHolde
             return address
         }
     }
+}
 
-    fun getRating(hotel : Hotel) : Int = STARS_NAMES.indexOf(hotel.cells!!.category)
+interface OnItemClickListener {
+
+    fun onItemClick(adapterPosition : Int)
 }

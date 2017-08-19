@@ -6,14 +6,18 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.indefinitedream.moscowhotels.data.DataSourceFactoryImpl
 import ru.indefinitedream.moscowhotels.data.MosApi
+import ru.indefinitedream.moscowhotels.di.Injector
+import ru.indefinitedream.moscowhotels.di.component.AppComponent
+import ru.indefinitedream.moscowhotels.di.component.DaggerAppComponent
+import ru.indefinitedream.moscowhotels.di.module.AppModule
 
-private const val CACHE_SIZE : Long = 10 * 1024 * 1024
-private const val API_URL = "https://apidata.mos.ru/v1/"
-private const val API_KEY = "api_key"
-private const val KEY = "0e0a8e267c408d925e1eeaf73a2a6e08" // TODO: get from resources
+var injectorIntance : Injector? = null
 
-var api : MosApi? = null
+fun injector() : Injector {
+    return injectorIntance!!
+}
 
 /**
  * Application object.
@@ -22,28 +26,14 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        setDefaultInjector()
+    }
 
-        val client = OkHttpClient.Builder()
-                .cache(Cache(cacheDir, CACHE_SIZE))
-                .addInterceptor {
-                    val url = it.request().url()
-                            .newBuilder()
-                            .addQueryParameter(API_KEY, KEY)
-                            .build()
-                    val request = it.request()
-                            .newBuilder()
-                            .url(url)
-                            .build()
-                    it.proceed(request)
-                }
+    private fun setDefaultInjector() {
+        val appModule = AppModule(applicationContext, DataSourceFactoryImpl(applicationContext))
+        val component = DaggerAppComponent.builder()
+                .appModule(appModule)
                 .build()
-
-        val retrofit = Retrofit.Builder()
-                .baseUrl(API_URL)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-
-        api = retrofit.create(MosApi::class.java)
+        injectorIntance = Injector(component)
     }
 }

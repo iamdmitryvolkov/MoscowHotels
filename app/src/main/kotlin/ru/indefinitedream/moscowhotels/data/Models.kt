@@ -34,6 +34,8 @@ class Cells {
     @SerializedName("Categorization")
     var category : String? = null
 
+    var stars : Int? = null
+
     @SerializedName("ContactPhone")
     var phone : Array<Phone>? = null
 

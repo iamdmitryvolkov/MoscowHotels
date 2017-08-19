@@ -8,11 +8,11 @@ import ru.indefinitedream.moscowhotels.data.Hotel
  */
 interface HotelsView {
 
-    fun showProgress()
+    fun showProgress(animated : Boolean)
 
-    fun showHotels(hotels : List<Hotel>)
+    fun showHotels(hotels : List<Hotel>, animated : Boolean)
 
-    fun showError(error : String)
+    fun showError(animated : Boolean)
 
     fun startActivity(intent : Intent)
 }

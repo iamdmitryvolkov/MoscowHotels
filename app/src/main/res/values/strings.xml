@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MoscowHotels</string>
+    <string name="api_key">0e0a8e267c408d925e1eeaf73a2a6e08</string>
+    <string name="error">Произошла ошибка. Проверьте подключение к интеренету, и попробуйте снова</string>
 </resources>
