@@ -1,4 +1,4 @@
-package ru.indefinitedream.moscowhotels
+package ru.indefinitedream.moscowhotels.data
 
 import com.google.gson.annotations.SerializedName
 

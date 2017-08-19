@@ -1,4 +1,4 @@
-package ru.indefinitedream.moscowhotels
+package ru.indefinitedream.moscowhotels.data
 
 import retrofit2.Call
 import retrofit2.http.GET

@@ -6,6 +6,7 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.indefinitedream.moscowhotels.data.MosApi
 
 private const val CACHE_SIZE : Long = 10 * 1024 * 1024
 private const val API_URL = "https://apidata.mos.ru/v1/"
@@ -17,9 +18,7 @@ var api : MosApi? = null
 /**
  * Application object.
  */
-class MoscowHotelsApp : Application() {
-
-
+class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
