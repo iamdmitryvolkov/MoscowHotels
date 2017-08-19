@@ -13,7 +13,7 @@ import ru.indefinitedream.moscowhotels.di.scopes.AppScope
  * Created by dmitry on 11.08.17.
  */
 @Module
-class AppModule(val context: Context, val dataSourceFactory: DataSourceFactory) {
+class AppModule(private val context: Context, private val dataSourceFactory: DataSourceFactory) {
 
     @Provides
     @AppScope

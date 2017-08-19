@@ -69,7 +69,7 @@ class ApiSource(private val context : Context) : DataSource {
         return hotels.map { it.apply { it.cells!!.stars = getRating(it) } }
     }
 
-    fun getRating(hotel : Hotel) : Int = STARS_NAMES.indexOf(hotel.cells!!.category)
+    private fun getRating(hotel : Hotel) : Int = STARS_NAMES.indexOf(hotel.cells!!.category)
 
     override fun getData(): Single<List<Hotel>> {
         return apiSingle()

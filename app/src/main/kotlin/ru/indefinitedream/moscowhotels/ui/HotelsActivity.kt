@@ -140,7 +140,7 @@ class HotelsAdapter(var hotels : List<Hotel>, private val onItemClickListener: O
         if (stars != null) holder.rating.rating = stars.toFloat()
     }
 
-    fun getAddress(hotel : Hotel) : String {
+    private fun getAddress(hotel : Hotel) : String {
         val address = hotel.cells!!.address
         if (address == null) {
             return ""
