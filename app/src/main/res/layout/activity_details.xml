@@ -2,10 +2,8 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
@@ -18,16 +16,16 @@
         android:layout_marginLeft="0dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginBottom="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView2" />
+        app:layout_constraintBottom_toTopOf="@+id/callText" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/callText"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginBottom="0dp"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
-        android:text="TextView2"
+        android:text="@string/action_call"
         android:gravity="start|center_vertical"
         android:padding="16dp"
         android:textAlignment="gravity"
@@ -35,16 +33,16 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintBottom_toTopOf="@+id/textView" />
+        app:layout_constraintBottom_toTopOf="@+id/emailText" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/emailText"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginBottom="0dp"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
-        android:text="TextView"
+        android:text="@string/action_email"
         android:gravity="start|center_vertical"
         android:padding="16dp"
         android:textAlignment="gravity"
@@ -52,16 +50,16 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintBottom_toTopOf="@+id/textView3" />
+        app:layout_constraintBottom_toTopOf="@+id/siteText" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/siteText"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginBottom="0dp"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
-        android:text="TextView3"
+        android:text="@string/action_web"
         android:gravity="start|center_vertical"
         android:padding="16dp"
         android:textAlignment="gravity"

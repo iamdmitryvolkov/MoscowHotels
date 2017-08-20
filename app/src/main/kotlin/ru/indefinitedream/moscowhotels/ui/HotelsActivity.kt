@@ -1,6 +1,5 @@
 package ru.indefinitedream.moscowhotels.ui
 
-import android.animation.Animator
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -35,7 +34,7 @@ class HotelsActivity : BaseDataActivity(), HotelsView, OnItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         injector().inject(this)
-
+        // TODO: implement hotels filtration
         recycler.also {
             it.layoutManager = LinearLayoutManager(this)
             it.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))

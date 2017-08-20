@@ -3,6 +3,8 @@ package ru.indefinitedream.moscowhotels.ui
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import android.widget.TextView
+import butterknife.BindView
 import ru.indefinitedream.moscowhotels.R
 import ru.indefinitedream.moscowhotels.data.Hotel
 import ru.indefinitedream.moscowhotels.injector
@@ -18,12 +20,20 @@ class DetailsActivity : BaseDataActivity(), DetailsView {
     @Inject
     lateinit var presenter : DetailsPresenter
 
-    var button : EditText? = null
+    @BindView(R.id.callText)
+    lateinit var callButton : TextView
+
+    @BindView(R.id.emailText)
+    lateinit var emailButton : TextView
+
+    @BindView(R.id.siteText)
+    lateinit var siteButton : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         injector().inject(this)
         presenter.connectView(this)
+        // TODO: implement google maps integration
     }
 
     override fun getLayoutId(): Int = R.layout.activity_details
