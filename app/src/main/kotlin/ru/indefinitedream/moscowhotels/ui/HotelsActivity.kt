@@ -1,6 +1,6 @@
 package ru.indefinitedream.moscowhotels.ui
 
-import android.support.v7.app.AppCompatActivity
+import android.animation.Animator
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.RatingBar
 import android.widget.TextView
 import butterknife.BindView
@@ -20,15 +19,10 @@ import ru.indefinitedream.moscowhotels.presenter.HotelsListPresenter
 import ru.indefinitedream.moscowhotels.view.HotelsView
 import javax.inject.Inject
 
-
-const val ANIMATION_DURATION = 500L
-const val VISIBLE_ALPHA = 1f
-const val INVISIBLE_ALPHA = 0f
-
 /**
  * Main Activity class
  */
-class HotelsActivity : AppCompatActivity(), HotelsView, OnItemClickListener {
+class HotelsActivity : BaseDataActivity(), HotelsView, OnItemClickListener {
 
     @Inject
     lateinit var presenter : HotelsListPresenter
@@ -36,19 +30,12 @@ class HotelsActivity : AppCompatActivity(), HotelsView, OnItemClickListener {
     @BindView(R.id.recycler)
     lateinit var recycler : RecyclerView
 
-    @BindView(R.id.progress)
-    lateinit var progress : ProgressBar
-
-    @BindView(R.id.error_message)
-    lateinit var error : TextView
+    private var adapter : HotelsAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
         injector().inject(this)
 
-        ButterKnife.bind(this)
         recycler.also {
             it.layoutManager = LinearLayoutManager(this)
             it.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
@@ -57,43 +44,32 @@ class HotelsActivity : AppCompatActivity(), HotelsView, OnItemClickListener {
         presenter.connectView(this)
     }
 
+    override fun getLayoutId(): Int = R.layout.activity_hotels
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.disconnectView()
         injector().eject(this)
     }
 
+    override fun setVisibleView(view: View, animated: Boolean) {
+        setVisibility(recycler, view == recycler, animated)
+        super.setVisibleView(view, animated)
+    }
 
     override fun showHotels(hotels : List<Hotel>, animated : Boolean) {
         setVisibleView(recycler, animated)
-        recycler.adapter = HotelsAdapter(hotels, this)
-    }
-
-    override fun showProgress(animated : Boolean) {
-        setVisibleView(progress, animated)
-    }
-
-    override fun showError(animated : Boolean) {
-        setVisibleView(error, animated)
+        if (adapter == null) {
+            adapter = HotelsAdapter(hotels, this)
+            recycler.adapter = adapter
+        } else {
+            adapter!!.hotels = hotels
+            adapter!!.notifyDataSetChanged()
+        }
     }
 
     override fun onItemClick(adapterPosition: Int) {
         presenter.onItemClick(adapterPosition)
-    }
-
-    private fun setVisibleView(view : View, animated : Boolean) {
-        setVisibility(recycler, view == recycler, animated)
-        setVisibility(progress, view == progress, animated)
-        setVisibility(error, view == error, animated)
-    }
-
-    private fun setVisibility(view : View, visible: Boolean, animated : Boolean) {
-        val alpha = if (visible) VISIBLE_ALPHA else INVISIBLE_ALPHA
-        if (animated) {
-            view.animate().alpha(alpha).setDuration(ANIMATION_DURATION).start()
-        } else {
-            view.alpha = alpha
-        }
     }
 }
 

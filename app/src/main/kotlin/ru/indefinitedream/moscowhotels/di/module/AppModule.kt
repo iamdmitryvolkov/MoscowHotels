@@ -4,9 +4,7 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import ru.indefinitedream.moscowhotels.data.DataProvider
-import ru.indefinitedream.moscowhotels.data.DataSource
 import ru.indefinitedream.moscowhotels.data.DataSourceFactory
-import ru.indefinitedream.moscowhotels.data.StorableDataSource
 import ru.indefinitedream.moscowhotels.di.scopes.AppScope
 
 /**

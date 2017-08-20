@@ -7,7 +7,6 @@ import io.reactivex.schedulers.Schedulers
 import ru.indefinitedream.moscowhotels.data.DataProvider
 import ru.indefinitedream.moscowhotels.data.Hotel
 import ru.indefinitedream.moscowhotels.ui.DetailsActivity
-import ru.indefinitedream.moscowhotels.ui.KEY_HOTEL_ID
 import ru.indefinitedream.moscowhotels.view.HotelsView
 
 /**
@@ -58,7 +57,7 @@ class HotelsListPresenter(private val context : Context, private val provider : 
         if (!loading) {
             notifyView(false)
         } else {
-            view.showProgress(false)
+            view.showProgressBar(false)
         }
     }
 

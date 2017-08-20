@@ -1,7 +1,9 @@
 package ru.indefinitedream.moscowhotels.di.module
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
+import ru.indefinitedream.moscowhotels.data.DataProvider
 import ru.indefinitedream.moscowhotels.di.scopes.DetailsScope
 import ru.indefinitedream.moscowhotels.presenter.DetailsPresenter
 
@@ -13,8 +15,8 @@ class DetailsModule {
 
     @Provides
     @DetailsScope
-    fun providePresenter() : DetailsPresenter {
-        return DetailsPresenter()
+    fun providePresenter(context : Context, provider : DataProvider) : DetailsPresenter {
+        return DetailsPresenter(context, provider)
     }
 
 }

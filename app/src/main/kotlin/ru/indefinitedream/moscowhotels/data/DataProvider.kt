@@ -3,6 +3,7 @@ package ru.indefinitedream.moscowhotels.data
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toObservable
+import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by dmitry on 19.08.17.
@@ -26,7 +27,7 @@ class DataProvider(private val sources: List<DataSource>,
                 .toSingle(getDataFromSource(storableSources).toSingle().blockingGet())*/
 
 
-        return Single.create {
+        val result : Single<List<Hotel>> = Single.create {
             res ->
             getDataFromSource(sources).subscribe({
                 res.onSuccess(it)
@@ -43,6 +44,8 @@ class DataProvider(private val sources: List<DataSource>,
                 })
             })
         }
+
+        return result.subscribeOn(Schedulers.newThread())
 
     }
 
