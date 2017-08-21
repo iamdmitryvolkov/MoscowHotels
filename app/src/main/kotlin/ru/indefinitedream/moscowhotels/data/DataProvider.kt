@@ -20,13 +20,6 @@ class DataProvider(private val sources: List<DataSource>,
     fun getData() : Single<List<Hotel>> {
         if (data != null) return Single.just(data)
 
-
-        // TODO: check it
-        /*getDataFromSource(sources)
-                .doOnSuccess { updateStorableSources(it) }
-                .toSingle(getDataFromSource(storableSources).toSingle().blockingGet())*/
-
-
         val result : Single<List<Hotel>> = Single.create {
             res ->
             getDataFromSource(sources).subscribe({

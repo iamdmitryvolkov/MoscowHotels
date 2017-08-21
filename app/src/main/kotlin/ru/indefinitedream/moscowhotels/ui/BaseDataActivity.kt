@@ -29,7 +29,7 @@ abstract class BaseDataActivity : AppCompatActivity(), BaseView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(getLayoutId())
-        ButterKnife.bind(this) //TODO: uncomment if needed
+        ButterKnife.bind(this)
     }
 
     abstract fun getLayoutId() : Int
